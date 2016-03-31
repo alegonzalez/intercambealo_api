@@ -18,9 +18,8 @@ class User < ActiveRecord::Base
    
     #set encryption the date
     def encryptionDateForToken(user,userSearch)
-    	user.creationDate = Time.now
-      user.token = user.creationDate #Digest::MD5.hexdigest(user.creationDate.to_s)
-      userSearch.update(:token => user.token, :creationDate => user.creationDate)
+    	user.token = Time.now #Digest::MD5.hexdigest(user.creationDate.to_s)
+      userSearch.update(:token => user.token)
     end
 
     #validate that password and user are equals

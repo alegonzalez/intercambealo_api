@@ -2,8 +2,7 @@ class UsersController < ApplicationController
  require 'time'
  before_action :set_users, only: [:destroy,:update]
  before_action :validate_token, only: [:create,:update,:destroy]
-	#before_action :authenticate, only: [:show,:edit,:update,:destroy]
-  skip_before_filter :verify_authenticity_token, only: [:create,:destroy,:authenticate,:update]
+ skip_before_filter :verify_authenticity_token, only: [:create,:destroy,:authenticate,:update]
 	#create a new user
 
 	def create
@@ -39,27 +38,42 @@ class UsersController < ApplicationController
   	end
    #authenticate the user 
    def authenticate
-   	@user = User.new(params_authenticate)
-   	@user.valid_user_password(@user)
-   	if @user.errors{:password}.empty? || @user.errors{:username}.empty?
-   		session[:token] = @user.token
-       session[:expires] = Time.now + 1.minute
-       render json: {"Token" => session[:token]}, status: 200
+   	user = User.new(params_authenticate)
+   	user.valid_user_password(user)
+   	if user.errors{:password}.empty? || user.errors{:username}.empty?
+   		session[:token] = user.token
+      session[:user] = user
+
+      session[:expire] =  Time.now + 30.minute
+      render json: {"Token" => session[:token]}, status: 200
      else
        render json: user.errors, status: 422
      end
    end
    #validate the token 
-   def validate_token
+    def validate_token
 
-    if(session[:expires]<Time.now)
+    if(session[:expire] < Time.now)
       render json: {"Message" => "the session has expired, please log"} ,status: 402
-    end
+    else
+      
+      session[:expire] = Time.now + 30.minute
+      user =  User.new
+      user= session[:user]
+      user['token'] = Time.now
+      id= User.find_by(username: user['username'])
+      id.update(:token => user['token'])
+    end 
+
   end
+
+
+
+
     #get data the user 
     private
     def params_user
-    	params.permit(:username,:password,:firstname,:token,:creationDate)
+    	params.permit(:username,:password,:firstname,:token)
     end
     #Allow only the params indicated
     private 

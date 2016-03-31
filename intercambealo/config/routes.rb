@@ -3,14 +3,18 @@ Rails.application.routes.draw do
   #resources :product 
 #Agrega routas a los recursos el collection
 
+
  resources :transaction 
 
- 
-  resources :product do
+ resources :product do
     collection do
       get :search
     end
   end
+
+ post '/users/authenticate' => 'users#authenticate'
+ resources :users
+
 
 
 # get '/product/search',to:'product#search', as: 'product'
