@@ -2,7 +2,9 @@ class ProductController < ApplicationController
 
 	before_action :getById ,only: [:update,:destroy,:show]
 
-	before_action :validate_token, only: [:create,:update,:destroy,:show,:index,:search]
+	before_filter :validate_token, only: [:create,:update,:destroy,:show,:index,:search]
+
+	skip_before_filter :verify_authenticity_token, only: [:create,:update,:destroy,:show,:index,:search,:validate_token]
 
 	def index
 		product = Product.all
@@ -69,10 +71,11 @@ class ProductController < ApplicationController
 
 	def validate_token
 
-		if(session[:expire] < Time.now)
+		if(session[:token].nil?)
+			render json: {"Message" => "Please Log"} ,status: 402
+		elsif (session[:expire] < Time.now)
 			render json: {"Message" => "the session has expired, please log"} ,status: 402
 		else
-			
 			session[:expire] = Time.now + 30.minute
 			user =  User.new
 			user= session[:user]

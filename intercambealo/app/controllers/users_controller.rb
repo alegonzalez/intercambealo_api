@@ -2,7 +2,7 @@ class UsersController < ApplicationController
  require 'time'
  before_action :set_users, only: [:destroy,:update]
  before_action :validate_token, only: [:create,:update,:destroy]
- skip_before_filter :verify_authenticity_token, only: [:create,:destroy,:authenticate,:update]
+ skip_before_filter :verify_authenticity_token, only: [:create,:destroy,:authenticate,:update,:validate_token]
 	#create a new user
 
 	def create
@@ -43,20 +43,33 @@ class UsersController < ApplicationController
    	if user.errors{:password}.empty? || user.errors{:username}.empty?
    		session[:token] = user.token
       session[:user] = user
-
-      session[:expire] =  Time.now + 30.minute
+      session[:expire] =  Time.now + 30.minute     
       render json: {"Token" => session[:token]}, status: 200
-     else
-       render json: user.errors, status: 422
-     end
+    else
+     render json: user.errors, status: 422
    end
-   #validate the token 
-    def validate_token
+ end
 
-    if(session[:expire] < Time.now)
+ def logout
+
+  if session.delete(:token)
+    render nothing: true, status: 200
+  else
+    render json: {"Error" => "Can't delete the session" }, status: 422
+  end
+
+end 
+
+
+
+   #validate the token 
+  def validate_token
+
+    if(session[:token].nil?)
+      render json: {"Message" => "Please Log"} ,status: 402
+    elsif (session[:expire] < Time.now)
       render json: {"Message" => "the session has expired, please log"} ,status: 402
     else
-      
       session[:expire] = Time.now + 30.minute
       user =  User.new
       user= session[:user]

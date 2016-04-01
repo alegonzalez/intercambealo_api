@@ -12,8 +12,10 @@ Rails.application.routes.draw do
     end
   end
 
- post '/users/authenticate' => 'users#authenticate'
+ post '/session/authenticate' => 'users#authenticate'
+ get '/session/logout' => 'users#logout'
  resources :users
+
 
 
 

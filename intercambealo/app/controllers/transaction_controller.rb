@@ -1,6 +1,7 @@
 class TransactionController < ApplicationController
 
 	before_action :validate_token, only: [:create,:index]
+	skip_before_filter :verify_authenticity_token, only: [:create,:index,:validate_token]
 
 	def index
 		transaction = Transaction.all
@@ -32,10 +33,11 @@ class TransactionController < ApplicationController
 
 	def validate_token
 
-		if(session[:expire] < Time.now)
+		if(session[:token].nil?)
+			render json: {"Message" => "Please Log"} ,status: 402
+		elsif (session[:expire] < Time.now)
 			render json: {"Message" => "the session has expired, please log"} ,status: 402
 		else
-			
 			session[:expire] = Time.now + 30.minute
 			user =  User.new
 			user= session[:user]
