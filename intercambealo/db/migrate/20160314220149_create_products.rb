@@ -2,9 +2,9 @@ class CreateProducts < ActiveRecord::Migration
   def change
     create_table :products do |t|
       t.string :name
-      t.string :descripcion
+      t.string :description
       t.string :state
-
+      t.string :imagen
       t.timestamps null: false
     end
   end

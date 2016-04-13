@@ -11,12 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160315144240) do
+ActiveRecord::Schema.define(version: 20160413162728) do
 
   create_table "products", force: :cascade do |t|
     t.string   "name",        limit: 255
-    t.string   "descripcion", limit: 255
+    t.string   "description", limit: 255
     t.string   "state",       limit: 255
+    t.string   "imagen",      limit: 255
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
@@ -24,12 +25,15 @@ ActiveRecord::Schema.define(version: 20160315144240) do
   create_table "transactions", force: :cascade do |t|
     t.integer  "product_req_id",     limit: 4
     t.integer  "product_offered_id", limit: 4
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.integer  "user_id",            limit: 4
+    t.string   "state",              limit: 255
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
   end
 
   add_index "transactions", ["product_offered_id"], name: "fk_rails_c2a0beec69", using: :btree
   add_index "transactions", ["product_req_id"], name: "fk_rails_21c93fdf41", using: :btree
+  add_index "transactions", ["user_id"], name: "fk_rails_77364e6416", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "username",   limit: 255
@@ -42,4 +46,5 @@ ActiveRecord::Schema.define(version: 20160315144240) do
 
   add_foreign_key "transactions", "products", column: "product_offered_id"
   add_foreign_key "transactions", "products", column: "product_req_id"
+  add_foreign_key "transactions", "users"
 end
