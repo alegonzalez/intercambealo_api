@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Create user</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+</head>
+<script type="text/javascript">
+		//This is a function that get data and create a user 
+	function getData(){
+		
+		var parametros = {
+			"firstname" : $("#firstname").val(),
+			"username" : $("#username").val(),
+			"password" : $("#password").val()
+		};
+		$.ajax({
+			data:  parametros,
+			url:   'createUser.php',
+			type:  'POST',
+			beforeSend: function () {
+				$("#resultado").html("Procesando, espere por favor...");
+			},
+			success:  function (response) {
+				if(response.message == "error"){
+					alert("Error");
+				}else{
+					alert("Se creo el usuario");
+				}
+				$("#resultado").html(response);
+			}
+		});
+	}
+
+</script>
+<body class="allregister" >
+<div class="cover"></div>
+	<nav>
+		<li class="dashboard"><a href=""><i class="material-icons ">cloud_done</i>Dashboard</a></li>
+		<ul class="nav nav-pills">
+
+			<li role="presentation" ><a href="#">Login</a></li>
+			<li role="presentation"><a href="#">Products</a></li>
+			<li role="presentation"><a href="#">Transaction</a></li>
+			<li role="presentation" class="active"><a href="#">Register User</a></li>
+		</ul>
+	</nav>
+	<div class="col-md-6 col-md-offset-2">
+		<form  class="col-md-offset-2 registerUser">
+			<h3 class="tituleRegisterUser">Register user</h3>
+			<div class="input-group inputLogin col-md-10">
+				<span class="input-group-addon" id="basic-addon1"><i class="material-icons">assignment_ind</i></span>
+				<input type="text" class="form-control firstName" id="firstname"  placeholder="Firstname" aria-describedby="basic-addon1">
+			</div>
+			<div class="input-group inputLogin col-md-10">
+				<span class="input-group-addon" id="basic-addon1"><i class="material-icons">account_circle</i></span>
+				<input type="text" class="form-control username" id="username" placeholder="Username" aria-describedby="basic-addon1">
+			</div>
+			<div class="input-group inputLogin col-md-10">
+				<span class="input-group-addon" id="basic-addon1"><i class="material-icons">vpn_key</i></span>
+				<input type="password" class="form-control password" id="password"  placeholder="Password" aria-describedby="basic-addon1">
+			</div>
+
+			<div class="col-md-10 col-md-offset-3 buttonLogin">
+				<button type="button" onclick="getData();" class="btn">Register</button>
+			</div>
+		</form>
+
+	</div>
+
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	
+</body>
+</html>

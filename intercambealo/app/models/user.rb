@@ -1,6 +1,7 @@
-class User < ActiveRecord::Base
-	require 'digest/md5'  
-	validates :username, presence: {:message => "The camp name is required"}
+	
+  class User < ActiveRecord::Base 
+	require 'digest/md5' 
+  validates :username, presence: {:message => "The camp name is required"}
   validates :password, presence: {:message => "The camp password is required"}
   #validates :firsname, presence: {:message => "The camp firsname is required"}
     #:token,:creationDate

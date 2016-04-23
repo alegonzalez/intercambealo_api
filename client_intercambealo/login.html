@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+</head>
+<script type="text/javascript">
+	function login(){
+		
+		var parametros = {
+			"username" : $("#username").val(),
+			"password" : $("#password").val()
+		};
+		$.ajax({
+			data:  parametros,
+			url:   'authentication.php',
+			type:  'POST',
+			beforeSend: function () {
+				$("#resultado").html("Procesando, espere por favor...");
+			},
+			success:  function (response) {
+				if(response.message == "error"){
+					alert("Error");
+				}else{
+					var data = response.message;
+					var res = data.replace('\\', " ");
+					localStorage.setItem('Token', JSON.stringify(res));
+					 window.location.href="http://localhost/intercambealo_api/client_intercambealo/dashboard.php";
+				}
+				$("#resultado").html(response);
+			}
+		});
+	}
+</script>
+<body class="allLogin" >
+<div class="cover">
+	
+</div>
+<div class="col-md-6 headerLogin col-md-offset-2">
+				
+				<form class="login col-md-offset-2">
+
+					<div class="col-md-10">
+						<h3><i class="material-icons">https</i>Login Intercambealo</h3>
+					</div>
+					<div class="input-group inputLogin col-md-10">
+						<span class="input-group-addon" id="basic-addon1"><i class="material-icons">account_circle</i></span>
+						<input type="text" class="form-control username" id="username" placeholder="Username" aria-describedby="basic-addon1">
+					</div>
+					<div class="input-group inputLogin col-md-10">
+						<span class="input-group-addon" id="basic-addon1"><i class="material-icons">vpn_key</i></span>
+						<input type="password" class="form-control password" id="password"  placeholder="Password" aria-describedby="basic-addon1">
+					</div>
+					<div class="col-md-10 col-md-offset-3 buttonLogin">
+						<button type="button" class="btn" onclick="login();">Log in</button>
+					</div>
+				</form>
+
+			</div>
+
+	
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+	
+</body>
+</html>
