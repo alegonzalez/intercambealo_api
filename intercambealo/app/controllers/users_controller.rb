@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
  require 'time'
+ require 'digest/md5' 
  before_action :set_users, only: [:destroy,:update]
- #before_action :validate_token, only: [:create,:update,:destroy]
+ before_action :validate_token, only: [:create,:update,:destroy]
  skip_before_filter :verify_authenticity_token, only: [:create,:destroy,:authenticate,:update,:validate_token]
 	#create a new user
 
@@ -41,44 +42,59 @@ class UsersController < ApplicationController
    	user = User.new(params_authenticate)
    	user.valid_user_password(user)
    	if user.errors{:password}.empty? || user.errors{:username}.empty?
-   		session[:token] = user.token
-      session[:user] = user
-      session[:expire] =  Time.now + 30.minute     
-      render json: {"Token" => session[:token]}, status: 200
-    else
-     render json: user.errors, status: 422
-   end
+# token = Time.now + 30.minute
+render json: {"Token" => user.token}, status: 200
+else
+ render json: {"Token" => user.errors}, status: 422
+end
+   #user.errors
  end
 
  def logout
+  header = request.headers["Content-type"];
+ 
+  render json:  header , status: 200 
 
-  if session.delete(:token)
-    render nothing: true, status: 200
-  else
-    render json: {"Error" => "Can't delete the session" }, status: 422
-  end
+   #token = User.new(params[:token])
+   
+ #user = JSON[token['token']]
+ #render json: {"Error" => user}, status: 200
+  # id= User.find_by(username: user['username'])
+
+   #if id.update(:token => nil)
+    # render nothing: true, status: 200 
+   #else
+   # render json: {"Error" => "Can't delete the session" }, status: 422
+  #end
 
 end 
 
 
+#get token 
+def getToken
+  params.permit(:token)
+end
 
    #validate the token 
-  def validate_token
+   def validate_token
+    #request.headers["token"]}
+    puts "the token is"
+    puts  request.headers["Content-type"]
+    render json: request.headers["Content-type"]  ,status: 200
+    #if(session[:token].nil?)
+    #  render json: {"Message" => "Please Log"} ,status: 402
+   # elsif (session[:expire] < Time.now)
+   #   render json: {"Message" => "the session has expired, please log"} ,status: 402
+   # else
+    #  session[:expire] = Time.now + 30.minute
+    #  user =  User.new
+    #  user= session[:user]
+    #  user['token'] = Time.now
+    #  id= User.find_by(username: user['username'])
+    #  id.update(:token => user['token'])
+   # end 
 
-    if(session[:token].nil?)
-      render json: {"Message" => "Please Log"} ,status: 402
-    elsif (session[:expire] < Time.now)
-      render json: {"Message" => "the session has expired, please log"} ,status: 402
-    else
-      session[:expire] = Time.now + 30.minute
-      user =  User.new
-      user= session[:user]
-      user['token'] = Time.now
-      id= User.find_by(username: user['username'])
-      id.update(:token => user['token'])
-    end 
-
-  end
+ end
 
 
 

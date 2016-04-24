@@ -12,6 +12,7 @@
 
 <script type="text/javascript">
 	(function(){ 
+
 		$(".product").remove();
 		$.ajax({
 			url:   'getProduct.php',
@@ -23,8 +24,9 @@
 				
 				if(response.message == "error"){
 					alert("Error");
+					console.log("lalala");
 				}else{
-					debugger;
+					
 					var product = response.message;
 					
 					for (var i = 0; i<= product.length-1; i++) {
@@ -45,6 +47,7 @@
 		"<div class='col-md-6'> "+ "<button type='button' class='btn btn-danger actionProduct'> "+ "<i class='material-icons'>delete_forever</i>" +"</button>"+ "</div>"+
 		"<div class='col-md-6'> "+ "<button type='button' class='btn btn-primary actionProduct'> "+ "<i class='material-icons'>update</i>" +"</button>"+ "</div>"+
 		+"</div>";
+
 		var res = txt1.replace("NaN", "");
 		$(".row").append(res); 	
 	}

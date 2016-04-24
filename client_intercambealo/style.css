@@ -48,6 +48,27 @@ a:hover{
 	background: transparent;
 	margin-top: -4%;
 }
+.dropdown:hover{
+	background: transparent;
+	color: white;
+}
+.dropdown{
+	background: transparent;	
+	background color: transparent;
+}
+.nav .open a, .nav .open a:focus, .nav .open a:hover {
+	background-color: transparent;
+
+}
+.dropdown-menu li a:hover {
+	display: block;
+	padding: 3px 20px;
+	clear: both;
+	font-weight: 400;
+	line-height: 1.42857143;
+	white-space: nowrap;
+}
+
 .login{
 	background: white;
 	margin-top: 28%;
@@ -90,7 +111,7 @@ h3 i{
 	color: white;
 }
 .registerUser{
-	margin-top: 21%;
+	margin-top: 8%;
 }
 .tituleRegisterUser{
 	text-align: center;
@@ -130,4 +151,21 @@ h3 i{
 }
 .tituleProduct{
 	text-align: center;
+}
+#errorAuthenticate{
+	margin-left: 31%;
+}
+.messageLogin{
+	margin-top: 4%;
+	position: relative;
+	top: 139px;
+	left: 30px;
+	margin-left: 6%;;
+}
+.messageregisterUser{
+	margin-top: 4%;
+	position: relative;
+	top: 30px;
+	left: 30px;
+	margin-left: 6%;;
 }
