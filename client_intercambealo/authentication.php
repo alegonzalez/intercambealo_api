@@ -12,16 +12,14 @@ $options = array(
 	'http' => array(
 		'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
 		'method'  => 'POST',
-		'content' => http_build_query($jsonData)
+		'content' => http_build_query($jsonData),
+		'ignore_errors' => true
 		)
 	);
 $context  = stream_context_create($options);
-$response = file_get_contents($url, false, $context);
-if($response === FALSE){
-	header('Content-Type: application/json');
-	echo json_encode(array('message' => "error"));
+$response = @file_get_contents($url, false, $context);
+header('Content-Type: application/json');
+$value = json_decode($response);
+echo json_encode( $value);
 
-}else{
-	header('Content-Type: application/json');
-	echo json_encode(array('message' => $response));
-}
+
