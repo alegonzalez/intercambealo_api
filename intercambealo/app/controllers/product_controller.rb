@@ -1,6 +1,9 @@
 class ProductController < ApplicationController
+
 	before_action :getById ,only: [:update,:destroy,:show]
+
 	#before_filter :validate_token, only: [:create,:update,:destroy,:show,:index,:search]
+
 	skip_before_filter :verify_authenticity_token, only: [:create,:update,:destroy,:show,:index,:search,:validate_token]
 
 	def index
@@ -15,9 +18,8 @@ class ProductController < ApplicationController
 	end
 
 	def product_params
-		params.permit(:name,:description,:state)
+		params.permit(:user_id,:name,:description,:state,:imagen)
 	end
-
 
 	def create
 		product = Product.new(product_params)
