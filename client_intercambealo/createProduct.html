@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Crear Productos</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+</head>
+<script type="text/javascript">
+		//This is a function that get data and create a user 
+		function getData(){
+
+			var inputFileImage = document.getElementById("archivoImage");
+			var file = inputFileImage.files[0];
+			var data = new FormData();
+			
+			data.append("archivo",file);
+			data.append("user_id",$("#user_id").val());
+			data.append("name",$("#name").val());
+			data.append("description",$("#description").val());
+			data.append("state",$("#state").val());
+
+			$.ajax({
+				data:  data,
+				url:   'createProduct.php',
+				type:  'POST',
+				contentType:false,
+				processData:false,
+				cache:false,
+				beforeSend: function () {
+					$("#resultado").html("Procesando, espere por favor...");
+				},
+				success:  function (response) {
+					if(response.message == "error"){
+						alert("Error");
+					}else{
+						alert("Se creo el producto");
+					}
+					$("#resultado").html(response);
+				}
+			});
+
+			
+
+
+		}
+
+
+	</script>
+	<body>
+
+		<form enctype="multipart/form-data" id="createProduct" class="createProduct col-md-offset-2">
+			<div class="col-md-10">
+				<h3>Crear Productos</h3>
+			</div>
+			<div class="input-group inputLogin col-md-10">
+				<span class="input-group-addon" id="basic-addon1"><i class="material-icons">account_circle</i></span>
+				<input type="numeric" class="form-control username" id="user_id" placeholder="user_id" aria-describedby="basic-addon1">
+			</div>
+			<div class="input-group inputLogin col-md-10">
+				<span class="input-group-addon" id="basic-addon1"><i class="material-icons">vpn_key</i></span>
+				<input type="text" class="form-control password" id="name"  placeholder="name" aria-describedby="basic-addon1">
+			</div>
+			<div class="input-group inputLogin col-md-10">
+				<span class="input-group-addon" id="basic-addon1"><i class="material-icons">vpn_key</i></span>
+				<input type="text" class="form-control password" id="description"  placeholder="description" aria-describedby="basic-addon1">
+			</div>
+			<div class="input-group inputLogin col-md-10">
+				<span class="input-group-addon" id="basic-addon1"><i class="material-icons">vpn_key</i></span>
+				<input type="text" class="form-control password" id="state"  placeholder="state" aria-describedby="basic-addon1">
+			</div>
+			
+
+
+			<input id="archivoImage" name="archivoImage" type="file" />
+
+
+			<div class="col-md-10 col-md-offset-3 buttonLogin">
+				<button type="button" class="btn" onclick="getData();">Log in</button>
+			</div>
+		</form>
+
+
+
+	</body>
+	</html>
