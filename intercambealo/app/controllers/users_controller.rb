@@ -41,7 +41,7 @@ class UsersController < ApplicationController
    	user = User.new(params_authenticate)
    	user.valid_user_password(user)
    	if user.errors{:password}.empty? || user.errors{:username}.empty?
-<<<<<<< HEAD
+
 # token = Time.now + 30.minute
 render json: {"Token" => user.token}, status: 200
 else
@@ -52,7 +52,7 @@ end
 
  def logout
   header = request.headers["Content-type"];
- 
+
   render json:  header , status: 200 
 
    #token = User.new(params[:token])
@@ -60,18 +60,17 @@ end
  #user = JSON[token['token']]
  #render json: {"Error" => user}, status: 200
   # id= User.find_by(username: user['username'])
-=======
-   		session[:token] = user.token
-      session[:user] = user
-      session[:expire] =  Time.now + 30.minute     
-      render json: {"Token" => session[:token]}, status: 200
-    else
-     render json: user.errors, status: 422
-   end
- end
 
- def logout
->>>>>>> origin/master
+  session[:token] = user.token
+  session[:user] = user
+  session[:expire] =  Time.now + 30.minute     
+  render json: {"Token" => session[:token]}, status: 200
+else
+ render json: user.errors, status: 422
+end
+end
+
+def logout
 
   if session.delete(:token)
     render nothing: true, status: 200
@@ -84,7 +83,7 @@ end
 
 
    #validate the token 
-  def validate_token
+   def validate_token
 
     if(session[:token].nil?)
       render json: {"Message" => "Please Log"} ,status: 402
