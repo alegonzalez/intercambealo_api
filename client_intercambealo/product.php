@@ -16,6 +16,7 @@
 
 
 	(function(){ 
+
 		$(".product").remove();
 		$.ajax({
 			url:   'getProduct.php',
@@ -27,8 +28,13 @@
 				
 				if(response.message == "error"){
 					alert("Error");
+					console.log("lalala");
 				}else{
+<<<<<<< HEAD
 
+=======
+					
+>>>>>>> origin/master
 					var product = response.message;
 
 
