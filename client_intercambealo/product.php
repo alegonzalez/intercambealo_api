@@ -30,14 +30,8 @@
 					alert("Error");
 					console.log("lalala");
 				}else{
-<<<<<<< HEAD
 
-=======
-					
->>>>>>> origin/master
 					var product = response.message;
-
-
 
 					for (var i = 0; i<= product.length-1; i++) {
 						createElement(product[i].name,product[i].imagen,product[i].id);
@@ -96,12 +90,7 @@
 
 
 	}
-
-
-
-
-
-
+	
 </script>
 
 <body class="allDashboard" >
