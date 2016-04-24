@@ -3,10 +3,9 @@ $arrayName = array(
 	'username' => $_POST['username'], 
 	'password' => $_POST['password']
 	);
-//$jsonData = json_encode(array('user' => $arrayName));
+
 $jsonData = array('user' => $arrayName);
-//$jsonData = json_encode($arrayName);
-//$data = "{'user': $jsonData }";
+
 $url = 'http://localhost:3000/session/authenticate';
 $options = array(
 	'http' => array(

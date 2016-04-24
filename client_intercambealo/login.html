@@ -28,7 +28,6 @@
 			},
 			success:  function (response) {
 				$("#errorAuthenticate").text("");
-				debugger;
 				if(response.Token.username != undefined){
 					$(".messageLogin").show();
 					$("#errorAuthenticate").text(response.Token.username);
@@ -37,7 +36,9 @@
 					$("#errorAuthenticate").text(response.Token.password);
 				}else{
 					var data = response.Token;
+					var user = response.User;
 					localStorage.setItem('Token', JSON.stringify(data));
+					localStorage.setItem('User', JSON.stringify(user));
 					window.location.href="http://localhost/intercambealo_api/client_intercambealo/dashboard.php";
 				}
 				$("#resultado").html(response);

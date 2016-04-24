@@ -36,50 +36,33 @@ class UsersController < ApplicationController
   			render json: {"Error" => "The user can't delete"}, status: 422
   		end
   	end
+
    #authenticate the user 
    def authenticate
    	user = User.new(params_authenticate)
    	user.valid_user_password(user)
    	if user.errors{:password}.empty? || user.errors{:username}.empty?
+    # token = Time.now + 30.minute
+    id = User.find_by(username: user.username)
+    render json: {"Token" => user.token ,'User' => id}, status: 200
+  else
+    render json: {"Token" => user.errors}, status: 422
+  end
 
-# token = Time.now + 30.minute
-render json: {"Token" => user.token}, status: 200
-else
- render json: {"Token" => user.errors}, status: 422
-end
-   #user.errors
- end
-
- def logout
-  header = request.headers["Content-type"];
-
-  render json:  header , status: 200 
-
-   #token = User.new(params[:token])
-   
- #user = JSON[token['token']]
- #render json: {"Error" => user}, status: 200
-  # id= User.find_by(username: user['username'])
-
-  session[:token] = user.token
-  session[:user] = user
-  session[:expire] =  Time.now + 30.minute     
-  render json: {"Token" => session[:token]}, status: 200
-else
- render json: user.errors, status: 422
-end
 end
 
 def logout
 
-  if session.delete(:token)
-    render nothing: true, status: 200
-  else
-    render json: {"Error" => "Can't delete the session" }, status: 422
-  end
+ token = params[:token]
+ id = params[:id]
+ user= User.find_by(id: id)
+ if(user.update(:token => nil))
+  render nothing: true ,status: 200
+else
+ render json: user.errors, status: 422
+end
 
-end 
-
+end
 
 
    #validate the token 
@@ -108,14 +91,17 @@ end
     def params_user
     	params.permit(:username,:password,:firstname,:token)
     end
+
     #Allow only the params indicated
     private 
     def params_authenticate
      params.require(:user).permit(:username,:password)
    end
+
     #search by id
     private 
     def set_users
     	@user = User.find(params[:id])
     end
   end
+

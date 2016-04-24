@@ -19,7 +19,8 @@
    
     #set encryption the date
     def encryptionDateForToken(user,userSearch)
-    	user.token = Time.now #Digest::MD5.hexdigest(user.creationDate.to_s)
+    	user.token = Time.now 
+      user.token = Digest::MD5.hexdigest(user.token)
       userSearch.update(:token => user.token)
     end
 

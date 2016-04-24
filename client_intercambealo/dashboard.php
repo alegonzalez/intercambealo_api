@@ -15,21 +15,30 @@
 	});
 //This is  function close the session the user
 function closeSession(){
-	;
-	
-	var parametros = {
-		"Token" :localStorage.getItem('Token')
-	};
+
+	var user = localStorage.getItem('User');
+	var types = JSON.parse(user);
+	var id =types['id'];
+
+	var data = new FormData();
+
+	data.append("token",localStorage.getItem('Token'));
+	data.append("username",id);
+
+
 	$.ajax({
-		data:  parametros,
+		data:  data,
 		url:   'closeSession.php',
 		type:  'post',
+		contentType:false,
+		processData:false,
+		cache:false,
 		beforeSend: function () {
 			$("#resultado").html("Procesando, espere por favor...");
 		},
 		success:  function (response) {
 			localStorage.clear();
-			//window.location.href="http://localhost/intercambealo_api/client_intercambealo/login.html";
+			window.location.href="http://localhost/intercambealo_api/client_intercambealo/login.html";
 			$("#resultado").html(response);
 		}
 	});
@@ -44,11 +53,11 @@ function closeSession(){
 		<li class="dashboard"><a href=""><i class="material-icons ">cloud_done</i>Dashboard</a></li>
 		<ul class="nav nav-pills">
 
-			<li role="presentation" ><a href="login.php">Login</a></li>
+			<li role="presentation" ><a href="login.html">Login</a></li>
 			<li role="presentation"><a href="product.php">Products</a></li>
-			<li role="presentation" class="active" ><a href="#">Transaction</a></li>
+			<li role="presentation" ><a href="transaccion.html">Transaction</a></li>
 			<li role="presentation"><a href="register.php">Register User</a></li>
-			<li><a href=""></a></li>
+			
 			<li class="dropdown"> <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="material-icons">settings</i> <span class="caret"></span> </a> 
 				<ul class="dropdown-menu" aria-labelledby="drop1"> <li><a href="#" onclick="closeSession();">Close session</a></li> 
 				</ul>
