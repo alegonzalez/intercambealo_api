@@ -42,17 +42,17 @@ class UsersController < ApplicationController
    	user = User.new(params_authenticate)
    	user.valid_user_password(user)
    	if user.errors{:password}.empty? || user.errors{:username}.empty?
-
-      render json: {"Token" => user.token}, status: 200
-    else
-     render json: {"Token" => user.errors}, status: 422
-   end
+# token = Time.now + 30.minute
+render json: {"Token" => user.token}, status: 200
+else
+ render json: {"Token" => user.errors}, status: 422
+end
    #user.errors
  end
 
  def logout
   header = request.headers["Content-type"];
-  
+ 
   render json:  header , status: 200 
 
    #token = User.new(params[:token])
