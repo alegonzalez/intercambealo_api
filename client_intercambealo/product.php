@@ -8,9 +8,13 @@
 	rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+
 </head>
 
 <script type="text/javascript">
+
+
+
 	(function(){ 
 		$(".product").remove();
 		$.ajax({
@@ -24,11 +28,13 @@
 				if(response.message == "error"){
 					alert("Error");
 				}else{
-					debugger;
+
 					var product = response.message;
-					
+
+
+
 					for (var i = 0; i<= product.length-1; i++) {
-						createElement(product[i].name);
+						createElement(product[i].name,product[i].imagen,product[i].id);
 					}
 
 					
@@ -37,17 +43,58 @@
 			}
 		});
 	})();
+
+
+	function deleteProduct(id) {
+		$.ajax({
+			data:  {'id': id},
+			url:   'deleteProduct.php',
+			type:  'GET',
+			beforeSend: function () {
+				$("#resultado").html("Procesando, espere por favor...");
+			},
+			success:  function (response) {
+				if(response.message == "error"){
+					alert("Error");
+				}else{
+					
+					//Hacer modal
+					window.location.href="http://localhost/intercambealo_api/client_intercambealo/product.php";
+
+				}
+				$("#resultado").html(response);
+			}
+		});
+	}
+
+	
+
 	//create the element html for product
-	function createElement(name){
+	function createElement(name,imagen,id){
+
+		//var image = imagen.replace("/",".");
 		var txt1 = "<div class ='col-md-3 product'>" + 
 		"<h3 class='tituleProduct'>"+ name +"</h3>"+
-		"<div class = 'col-md-7 col-md-offset-2 imageProduct'>" +"<img src='new.png' class='img-thumbnail'>" + "</div>"+
-		"<div class='col-md-6'> "+ "<button type='button' class='btn btn-danger actionProduct'> "+ "<i class='material-icons'>delete_forever</i>" +"</button>"+ "</div>"+
+		"<div class = 'col-md-7 col-md-offset-2 imageProduct'>" +
+		"<img id='imagen'class='img-thumbnail'>" + "</div>"+
+
+
+		"<div class='col-md-6'> "+ "<button type='button' id='id' onclick='deleteProduct("+id+");' class='btn btn-danger actionProduct'> "+ "<i class='material-icons'>delete_forever</i>" +"</button>"+ "</div>"+
+
+
 		"<div class='col-md-6'> "+ "<button type='button' class='btn btn-primary actionProduct'> "+ "<i class='material-icons'>update</i>" +"</button>"+ "</div>"+
 		+"</div>";
+
 		var res = txt1.replace("NaN", "");
-		$(".row").append(res); 	
+		$(".row").append(res); 
+
+
 	}
+
+
+
+
+
 
 </script>
 
