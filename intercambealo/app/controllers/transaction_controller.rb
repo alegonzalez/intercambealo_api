@@ -1,7 +1,7 @@
 class TransactionController < ApplicationController
 
-	before_action :validate_token, only: [:create,:index]
-	skip_before_filter :verify_authenticity_token, only: [:create,:index,:validate_token]
+	before_action  only: [:create,:index]
+	skip_before_filter :verify_authenticity_token, only: [:create,:index]
 
 	def index
 		transaction = Transaction.all
@@ -16,7 +16,7 @@ class TransactionController < ApplicationController
 
 
 	def transaction_params
-		params.permit(:product_req_id,:product_offered_id)
+		params.permit(:product_req_id,:product_offered_id,:user_id, :state)
 	end
 
 	def create
