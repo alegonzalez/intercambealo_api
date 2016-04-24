@@ -16,9 +16,14 @@
 			var inputFileImage = document.getElementById("archivoImage");
 			var file = inputFileImage.files[0];
 			var data = new FormData();
+
+			var user = localStorage.getItem('User');
+			var types = JSON.parse(user);
+			var id =types['id'];
+
 			
 			data.append("archivo",file);
-			data.append("user_id",$("#user_id").val());
+			data.append("user_id",id);
 			data.append("name",$("#name").val());
 			data.append("description",$("#description").val());
 			data.append("state",$("#state").val());
@@ -55,10 +60,6 @@
 		<form enctype="multipart/form-data" id="createProduct" class="createProduct col-md-offset-2">
 			<div class="col-md-10">
 				<h3>Crear Productos</h3>
-			</div>
-			<div class="input-group inputLogin col-md-10">
-				<span class="input-group-addon" id="basic-addon1"><i class="material-icons">account_circle</i></span>
-				<input type="numeric" class="form-control username" id="user_id" placeholder="user_id" aria-describedby="basic-addon1">
 			</div>
 			<div class="input-group inputLogin col-md-10">
 				<span class="input-group-addon" id="basic-addon1"><i class="material-icons">vpn_key</i></span>

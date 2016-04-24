@@ -1,5 +1,7 @@
 <?php 
-$response = file_get_contents('http://localhost:3000/product.json');
+
+
+$response = file_get_contents('http://localhost:3000/product/'.$user_id.'.json');
 $response = json_decode($response);
 
 
