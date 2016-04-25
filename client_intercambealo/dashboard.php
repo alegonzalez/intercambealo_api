@@ -54,9 +54,9 @@ function closeSession(){
 		<ul class="nav nav-pills">
 
 			<li role="presentation" ><a href="login.html">Login</a></li>
-			<li role="presentation"><a href="product.php">Products</a></li>
+			<li role="presentation"><a href="product.html">Products</a></li>
 			<li role="presentation" ><a href="transaccion.html">Transaction</a></li>
-			<li role="presentation"><a href="register.php">Register User</a></li>
+			<li role="presentation"><a href="register.html">Register User</a></li>
 			
 			<li class="dropdown"> <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="material-icons">settings</i> <span class="caret"></span> </a> 
 				<ul class="dropdown-menu" aria-labelledby="drop1"> <li><a href="#" onclick="closeSession();">Close session</a></li> 

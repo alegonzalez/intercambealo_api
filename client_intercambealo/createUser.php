@@ -15,10 +15,8 @@ $options = array(
 	//application/x-www-form-urlencoded\r\n
 		)
 	);
-$context  = stream_context_create($header);
+$context  = stream_context_create($options);
 $response = file_get_contents($url, false, $context);
-var_dump($response);
-die;
 header('Content-Type: application/json');
 $value = json_decode($response);
 echo json_encode(array($value));

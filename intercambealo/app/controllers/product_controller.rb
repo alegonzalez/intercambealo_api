@@ -17,9 +17,25 @@ class ProductController < ApplicationController
 		end
 	end
 
+	def productUser
+		product = Product.where(user_id: params[:user_id])
+
+		respond_to do |format|
+			if product
+				format.json {render json: product,status: 200}
+			else
+				format.json {render json: product.errors.messages,status: 422}
+			end
+		end
+	end
+
+
+
 	def product_params
 		params.permit(:user_id,:name,:description,:state,:imagen)
 	end
+
+	
 
 	def create
 		product = Product.new(product_params)

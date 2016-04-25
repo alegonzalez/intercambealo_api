@@ -9,6 +9,7 @@ Rails.application.routes.draw do
  resources :product do
     collection do
       get :search
+      get :productUser
     end
   end
 

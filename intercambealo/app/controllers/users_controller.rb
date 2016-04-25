@@ -2,7 +2,7 @@ class UsersController < ApplicationController
  require 'time'
  before_action :set_users, only: [:destroy,:update]
  #before_action :validate_token, only: [:create,:update,:destroy]
- skip_before_filter :verify_authenticity_token, only: [:create,:destroy,:authenticate,:update,:validate_token]
+ skip_before_filter :verify_authenticity_token, only: [:create,:destroy,:authenticate,:update]
 	#create a new user
 
 	def create
