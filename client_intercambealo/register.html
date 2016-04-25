@@ -30,15 +30,20 @@
 					$("#resultado").html("Procesando, espere por favor...");
 				},
 				success:  function (response) {
-				debugger;
+					
 					$("#errorAuthenticate").text("");
-					if(response[0].username !=undefined){
-						$(".messageregisterUser").show();
-						$("#errorAuthenticate").text(response[0].username);
-					}else{
+					if(response=="")
+					{
 						$(".messageregisterUser").show();
 						$("#errorAuthenticate").text("El usuario se creo correctamente");
+					}else
+					{
+						if(response[0].username !=undefined){
+							$(".messageregisterUser").show();
+							$("#errorAuthenticate").text("El usuario ya existe");
+						}
 					}
+					
 					$("#resultado").html(response);
 				}
 			});

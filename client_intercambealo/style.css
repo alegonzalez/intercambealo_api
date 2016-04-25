@@ -169,3 +169,19 @@ h3 i{
 	left: 30px;
 	margin-left: 6%;;
 }
+
+
+.btn_transaction
+{
+	margin-top: 67%;
+	margin-left: 24%;
+}
+
+.modal_transaction
+{
+	height: 358px;
+	width: 182%;
+	right: 41%;
+	top: 54px;
+}
+

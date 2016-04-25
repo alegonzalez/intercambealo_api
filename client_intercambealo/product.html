@@ -4,6 +4,7 @@
 	<title>Products</title>
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
 	rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="style.css">
@@ -12,8 +13,6 @@
 </head>
 
 <script type="text/javascript">
-
-
 
 	(function(){ 
 
@@ -28,9 +27,7 @@
 				
 				if(response.message == "error"){
 					alert("Error");
-					console.log("lalala");
 				}else{
-
 					var product = response.message;
 
 					for (var i = 0; i<= product.length-1; i++) {
@@ -43,6 +40,45 @@
 			}
 		});
 	})();
+
+
+	(function(){ 
+
+		var user = localStorage.getItem('User');
+		var types = JSON.parse(user);
+		var id =types['id'];
+
+		debugger;
+
+		$(".productUser").remove();
+		$.ajax({
+
+			url:   'getProductUser.php',
+			type:  'get',
+			data: {'id': id},
+
+			beforeSend: function () {
+				$("#resultado").html("Procesando, espere por favor...");
+			},
+			success:  function (response) {
+				
+				if(response.message == "error"){
+					alert("Error");
+				}else{
+					var productUser = response.message;
+					debugger;
+					for (var i = 0; i<= productUser.length-1; i++) {
+						createElement(productUser[i].name,productUser[i].imagen,productUser[i].id);
+					}
+
+					
+				}
+				$("#resultado").html(response);
+			}
+		});
+	})();
+
+
 
 
 	function deleteProduct(id) {
@@ -69,39 +105,39 @@
 
 	function closeSession(){
 
-	var user = localStorage.getItem('User');
-	var types = JSON.parse(user);
-	var id =types['id'];
+		var user = localStorage.getItem('User');
+		var types = JSON.parse(user);
+		var id =types['id'];
 
-	var data = new FormData();
+		var data = new FormData();
 
-	data.append("token",localStorage.getItem('Token'));
-	data.append("username",id);
+		data.append("token",localStorage.getItem('Token'));
+		data.append("username",id);
 
 
-	$.ajax({
-		data:  data,
-		url:   'closeSession.php',
-		type:  'post',
-		contentType:false,
-		processData:false,
-		cache:false,
-		beforeSend: function () {
-			$("#resultado").html("Procesando, espere por favor...");
-		},
-		success:  function (response) {
-			localStorage.clear();
-			window.location.href="http://localhost/intercambealo_api/client_intercambealo/login.html";
-			$("#resultado").html(response);
-		}
-	});
+		$.ajax({
+			data:  data,
+			url:   'closeSession.php',
+			type:  'post',
+			contentType:false,
+			processData:false,
+			cache:false,
+			beforeSend: function () {
+				$("#resultado").html("Procesando, espere por favor...");
+			},
+			success:  function (response) {
+				localStorage.clear();
+				window.location.href="http://localhost/intercambealo_api/client_intercambealo/login.html";
+				$("#resultado").html(response);
+			}
+		});
 
-}
-
-	
+	}	
 
 	//create the element html for product
 	function createElement(name,imagen,id){
+
+		debugger;
 
 		//var image = imagen.replace("/",".");
 		var txt1 = "<div class ='col-md-3 product'>" + 
@@ -117,7 +153,7 @@
 		+"</div>" +
 
 
-		"<div class='col-md-6'> "+ "<button type='button'  class='btn btn-success'> "+ "INTERCAMBEALO" + "<i class='material-icons'>thumbs_up_down</i>" +"</button>"+ "</div>"+
+		"<div class='col-md-6'> "+ "<button type='button' id='transaction' class='btn btn-success btn_transaction ' data-toggle='modal' data-target='#myModal'> "+ "INTERCAMBEALO" + "<i class='material-icons'>thumbs_up_down</i>" +"</button>"+ "</div>"+
 		+"</div>";
 
 
@@ -126,12 +162,19 @@
 
 
 	}
+
+
+
+	$(document).ready(function(){
+		$("#transaction").click(function(){
+			$("#myModal").modal();
+		});
+	});
 	
 </script>
 
 <body class="allDashboard" >
 	<div class="cover">
-
 	</div>
 	<nav>
 		<li class="dashboard"><a href=""><i class="material-icons ">cloud_done</i>Dashboard</a></li>
@@ -147,6 +190,33 @@
 			</li>
 		</ul>
 	</nav>
+
+
+	<div class="modal fade" id="myModal" role="dialog">
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal_transaction modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">INTERCAMBELO</h4>
+				</div>
+				<div class="modal-body" >
+					<div class="container">
+						<div class="row">
+							
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+
 	
 	<div class="container">
 		<div class="row">
