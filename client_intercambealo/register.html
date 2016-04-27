@@ -12,15 +12,52 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		$(".messageregisterUser").hide();
+		$(".close").click(function(){
+			$(".messageregisterUser").hide();
+		})
 	})
+		//This is  function close the session the user
+		function closeSession(){
+
+			var user = localStorage.getItem('User');
+			var types = JSON.parse(user);
+			var id =types['id'];
+
+			var data = new FormData();
+
+			data.append("token",localStorage.getItem('Token'));
+			data.append("username",id);
+
+
+			$.ajax({
+				data:  data,
+				url:   'closeSession.php',
+				type:  'post',
+				contentType:false,
+				processData:false,
+				cache:false,
+				beforeSend: function () {
+					$("#resultado").html("Procesando, espere por favor...");
+				},
+				success:  function (response) {
+					localStorage.clear();
+					window.location.href="http://localhost/intercambealo_api/client_intercambealo/login.html";
+					$("#resultado").html(response);
+				}
+			});
+
+		}
 		//This is a function that get data and create a user 
 		function getData(){
 			$(".messageregisterUser").hide();
+			var user = localStorage.getItem('User');
+			var types = JSON.parse(user);
 			var parametros = {
 				"firstname" : $("#firstname").val(),
 				"username" : $("#username").val(),
 				"password" : $("#password").val(),
-				"Token": localStorage.getItem('Token')
+				"Token": localStorage.getItem('Token'),
+				"id": types['id']
 			};
 			$.ajax({
 				data:  parametros,
@@ -30,21 +67,28 @@
 					$("#resultado").html("Procesando, espere por favor...");
 				},
 				success:  function (response) {
-					
 					$("#errorAuthenticate").text("");
-					if(response=="")
+					debugger;
+					if(response[0].token!=undefined)
 					{
 						$(".messageregisterUser").show();
 						$("#errorAuthenticate").text("El usuario se creo correctamente");
+						localStorage.setItem('Token', JSON.stringify(response[0].token));
 					}else
 					{
 						if(response[0].username !=undefined){
 							$(".messageregisterUser").show();
-							$("#errorAuthenticate").text("El usuario ya existe");
+							$("#errorAuthenticate").text(response[0].username);
 						}
-					}
+						if(response[0].Message !=undefined){
+							$(".messageregisterUser").show();
+							$("#errorAuthenticate").text(response[0].Message);
+						}
+					}		
 					
-					$("#resultado").html(response);
+					
+					
+					//$("#resultado").html(response);
 				}
 			});
 		}
@@ -60,12 +104,16 @@
 				<li role="presentation"><a href="#">Products</a></li>
 				<li role="presentation"><a href="#">Transaction</a></li>
 				<li role="presentation" class="active"><a href="#">Register User</a></li>
+				<li class="dropdown"> <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="material-icons">settings</i> <span class="caret"></span> </a> 
+					<ul class="dropdown-menu" aria-labelledby="drop1"> <li><a href="#" onclick="closeSession();">Close session</a></li> 
+					</ul>
+				</li>
 			</ul>
 		</nav>
 
 		<div class="col-md-6 col-md-offset-2">
 			<div class="alert alert-danger alert-dismissible messageregisterUser" role="alert">
-				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<button type="button" class="close"><span aria-hidden="true">&times;</span></button>
 				<strong id="errorAuthenticate"></strong>
 			</div>
 			<form  class="col-md-offset-2 registerUser">

@@ -1,6 +1,7 @@
 	
-  class User < ActiveRecord::Base 
+class User < ActiveRecord::Base 
 	require 'digest/md5' 
+  require "base64"
   validates :username, presence: {:message => "The camp name is required"}
   validates :password, presence: {:message => "The camp password is required"}
   #validates :firsname, presence: {:message => "The camp firsname is required"}
@@ -13,14 +14,14 @@
     def verificationUserNotRepit(user)
       userp = searchUserByUsername(user)
       if !userp.nil?
-      user.errors.add(:username,"The user is repeated, please introdeced other")
+        user.errors.add(:username,"The user is repeated, please introdeced other")
       end
     end
-   
+
     #set encryption the date
     def encryptionDateForToken(user,userSearch)
-    	user.token = Time.now 
-      user.token = Digest::MD5.hexdigest(user.token)
+    	user.token = Time.now + 30.minute 
+      user.token = Base64.encode64(user.token)
       userSearch.update(:token => user.token)
     end
 

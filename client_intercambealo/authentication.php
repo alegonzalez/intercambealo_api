@@ -17,6 +17,7 @@ $options = array(
 	);
 $context  = stream_context_create($options);
 $response = @file_get_contents($url, false, $context);
+
 header('Content-Type: application/json');
 $value = json_decode($response);
 echo json_encode( $value);

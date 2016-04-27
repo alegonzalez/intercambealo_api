@@ -1,25 +1,27 @@
 class UsersController < ApplicationController
  require 'time'
+ require "base64"
  before_action :set_users, only: [:destroy,:update]
- #before_action :validate_token, only: [:create,:update,:destroy]
+ before_action :validate_token, only: [:create,:update,:destroy]
  skip_before_filter :verify_authenticity_token, only: [:create,:destroy,:authenticate,:update]
 	#create a new user
 
 	def create
-		user = User.new(params_user)
-		user.verificationUserNotRepit(user)
+    user = User.new(params_user)
+    user.verificationUserNotRepit(user)
 
-		if !user.errors{:username}.empty?
-			render json:  user.errors, status: 422	
-		else
-			user.encryptionPassword(user)
-			if user.save
-				render nothing: true, status: 201
-			else
-				render json: user.errors, status: 422
-			end	
-		end
-	end
+    if !user.errors{:username}.empty?
+      render json:  user.errors, status: 422	
+    else
+     user.encryptionPassword(user)
+     if user.save
+
+      render json:{"token" => user.token }, status: 201
+    else
+      render json: user.errors, status: 422
+    end	
+  end
+end
     #update user
     def update
     	if @user.update(params_user)
@@ -67,19 +69,32 @@ end
 
    #validate the token 
    def validate_token
+    token = params[:token]
+    token = Base64.decode64(token)
+    expire = Time.parse(token)
+    render json: {"Message" => expire} ,status: 402 
+    #if (expire.to_i < (Time.now).to_i)
+    #  render json: {"Message" => "the session has expired, please log"} ,status: 402
+    #if(token == nil)
+     # render json: {"Message" => "Please Log"} ,status: 402
+      #
+       # 
+    # else
+      token = Time.now + 30.minute
+      
+     # render json: {"Message" => token} ,status: 402 
+      #lal = Time.parse(token)
+     # user =  User.new
+     id = params[:id]
+     id= User.find_by(id: id)
+      #token = token.to_s
+      #token = Base64.encode64(token)
+      id.update(:token => token)
+      id= User.find_by(id: id)
+      #id.token = (id.token)
+      #response.headers[''] = id.token
 
-    if(session[:token].nil?)
-      render json: {"Message" => "Please Log"} ,status: 402
-    elsif (session[:expire] < Time.now)
-      render json: {"Message" => "the session has expired, please log"} ,status: 402
-    else
-      session[:expire] = Time.now + 30.minute
-      user =  User.new
-      user= session[:user]
-      user['token'] = Time.now
-      id= User.find_by(username: user['username'])
-      id.update(:token => user['token'])
-    end 
+    #end 
 
   end
 
