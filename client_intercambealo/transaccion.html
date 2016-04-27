@@ -62,14 +62,18 @@
 					alert("Error");
 				}else{
 
+
+
 					var user = localStorage.getItem('User');
 					var types = JSON.parse(user);
 					var a =types['id'];
+
 
 					var transaction = response.message;
 
 
 					var nameOffer="";
+
 
 					for (var i = 0; i<= transaction.length-1; i++) {
 
@@ -77,48 +81,56 @@
 
 						i++;
 
-						createElement(nameOffer,transaction[i].name,transaction[i].state);
-					}
-
-					//for (var i = 0; i<= transaction.length-1; i++) {
-					//	createElement(transaction[i].product_req_id,transaction[i].product_offered_id,transaction[i].id);
-					//}
-
-					
+						createElement(nameOffer,transaction[i].name,transaction[i].state,transaction[i].id_t);
+					}		
 				}
 				$("#resultado").html(response);
 			}
 		});
 	});
 
-	function createElement(nameOffer,nameReq,state){
+	function deleteTransaction(id) {
+		
+		$.ajax({
+			data: {'id': id},
+			url:   'deleteTransaction.php',
+			type:  'get',
+			beforeSend: function () {
+				$("#resultado").html("Procesando, espere por favor...");
+			},
+			success:  function (response) {
+
+				window.location.href="http://localhost/intercambealo_api/client_intercambealo/transaccion.html";
+
+			}
+		});	
 
 
-		//var image = imagen.replace("/",".");
+	}
+
+	function createElement(nameOffer,nameReq,state,id){
+
+
+
 		var txt1 = "<div class ='col-md-3 product'>" + 
 		"<h3 class='tituleProduct'>"+ nameReq + '<i class="material-icons">favorite</i>' + nameOffer + "</h3>"+
 		"<div class = 'col-md-7 col-md-offset-2 imageProduct'>" +
 		"<img id='imagen'class='img-thumbnail'>" + "</div>" ;
 
-		if(state=="Finalizado")
+		if(state=="Finalizada")
 		{
-			txt1 += "<div class='col-md-6'> "+ "<button type='button' class='btn btn-danger btn_delete_transaction '>  <i class='material-icons'>delete_forever</i>" +"</button>"+ "</div>"+
+			txt1 += "<div class='col-md-6'>  <span>FINALIZADA</span>"+ "<button type='button' onclick='deleteTransaction("+ id +");' class='btn btn-danger btn_delete_transaction '>  <i class='material-icons'>delete_forever</i>" +"</button>"+ "</div>"+
 			+"</div>";
 			
-		}else (state=="")
+		}else 
 		{
 			txt1 += "<div class='col-md-6'>  <span>PENDIENTE</span> </div>"+
 			+"</div>";
 
 		}
 
-		
-
-
-
 		var res = txt1.replace("NaN", "");
 		$(".row").append(res); 
-
 
 	}
 

@@ -2,7 +2,6 @@
 
 $user_id = $_GET['id'];
 
-
 $response = @file_get_contents('http://localhost:3000/transaction?user_id='.$user_id);
 $response = json_decode($response);
 
@@ -34,10 +33,9 @@ $url = "http://localhost:3000/transaction/dateProduct/?user_id=".$response[0]->u
 
 	}
 
-
+	$response = array_values($response);
 }
 
-$response = array_values($response);
 
 if($response === FALSE){
 	header('Content-Type: application/json');

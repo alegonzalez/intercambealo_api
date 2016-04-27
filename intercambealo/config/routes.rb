@@ -9,11 +9,9 @@ Rails.application.routes.draw do
         get :dateProduct
         get :getNameProductReq
         get :getNameProductOffer
+
     end
   end
-
-
-  
 
  resources :product do
     collection do

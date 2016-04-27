@@ -1,12 +1,13 @@
 <?php 
 
 $arrayName = array(
-	'state' => $_GET['state'],
-);
+	'state' => 'Finalizada', 
+	);
 
 $id = $_GET['id'];
 
-$url = 'http://localhost:3000/product/'.$id.'.json';
+$url = 'http://localhost:3000/transaction/'.$id.'.json';
+
 
 $options = array(
 	'http' => array(
@@ -21,6 +22,7 @@ $options = array(
 $context  = stream_context_create($options);
 $response = file_get_contents($url,false,$context);
 
+
 if($response === FALSE){
 	header('Content-Type: application/json');
 	echo json_encode(array('message' => 'error'));
@@ -29,4 +31,5 @@ if($response === FALSE){
 	header('Content-Type: application/json');
 	echo json_encode(array('message' => $response));
 }
+
 

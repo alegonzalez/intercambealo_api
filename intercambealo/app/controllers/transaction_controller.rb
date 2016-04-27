@@ -1,7 +1,7 @@
 class TransactionController < ApplicationController
 
-	before_action  only: [:create,:index]
-	skip_before_filter :verify_authenticity_token, only: [:create,:index]
+	before_action :getById , only: [:update,:destroy]
+	#skip_before_filter :verify_authenticity_token, only: [:create,:index]
 
 	def index
 		transaction = Transaction.where(user_id: params[:user_id])
@@ -30,26 +30,33 @@ class TransactionController < ApplicationController
 		
 	end 
 
-	def transactionPending
+	def update
 
-		id = (params[:user_id]);
-
-		transaction =Transaction.joins("LEFT JOIN products ON transactions.product_offered_id=products.id").select("transactions.id,transactions.user_id").where("products.user_id" => id)
-
-		if transaction
-			render json: transaction,status: 201
+		if @product.update(transaction_params)
+			render json: @product,status: 200
 		else
-			render json: transaction.errors.messages,status: 422
-		end
-
+			render json: @product ,status: 200
+		end		
 	end
+
+
+	def getById
+		@product = Transaction.find(params[:id])
+	end
+
+	def destroy
+		@product.destroy
+		
+		render json: @product,status: 200
+	end
+
 
 	def dateProduct
 
 		id = (params[:user_id]);
 
 
-		transaction =Transaction.joins("LEFT JOIN products ON transactions.product_offered_id=products.id and transactions.user_id =" + id + " or products.id = transactions.product_req_id and  transactions.user_id = "+id ).select("products.*")
+		transaction =Transaction.joins("LEFT JOIN products ON transactions.product_offered_id=products.id and transactions.user_id =" + id + " or products.id = transactions.product_req_id and  transactions.user_id = "+id ).select("products.*,transactions.state, transactions.id as id_t")
 
 
 
@@ -66,7 +73,7 @@ class TransactionController < ApplicationController
 
 		user_id = params[:user_id];
 
-		transaction = Transaction.joins("LEFT JOIN products ON transactions.product_offered_id=products.id").select("products.*, transactions.*").where( 'products.user_id' => user_id)
+		transaction = Transaction.joins("LEFT JOIN products ON transactions.product_offered_id=products.id").select("products.*, transactions.*").where( 'products.user_id = ? and transactions.state = ?',user_id , 'Pendiente')
 
 		if transaction
 			render json: transaction,status: 201
@@ -91,24 +98,5 @@ class TransactionController < ApplicationController
 
 	end
 
-
-
-
-	def validate_token
-
-		if(session[:token].nil?)
-			render json: {"Message" => "Please Log"} ,status: 402
-		elsif (session[:expire] < Time.now)
-			render json: {"Message" => "the session has expired, please log"} ,status: 402
-		else
-			session[:expire] = Time.now + 30.minute
-			user =  User.new
-			user= session[:user]
-			user['token'] = Time.now
-			id= User.find_by(username: user['username'])
-			id.update(:token => user['token'])
-		end 
-
-	end
 
 end

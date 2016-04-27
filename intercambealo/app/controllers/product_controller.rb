@@ -71,9 +71,8 @@ class ProductController < ApplicationController
 
 	def destroy
 		@product.destroy
-		respond_to do |format|
-			format.json {render json: @product,status: 200}
-		end
+		
+			render json: @product,status: 200
 	end
 
 

@@ -1,18 +1,17 @@
 <?php 
 
 $arrayName = array(
-	'state' => $_GET['state'],
+	'id' => $_GET['id'], 
 );
 
 $id = $_GET['id'];
 
-$url = 'http://localhost:3000/product/'.$id.'.json';
+$url = 'http://localhost:3000/transaction/'.$id.'.json';
 
 $options = array(
 	'http' => array(
 		'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-		'method'  => 'PUT', 
-		'content' => http_build_query($arrayName), 
+		'method'  => 'DELETE', 
 		'ignore_errors' =>true
 
 		)
@@ -27,6 +26,6 @@ if($response === FALSE){
 
 }else{
 	header('Content-Type: application/json');
-	echo json_encode(array('message' => $response));
+	echo json_encode(array('message' => 'El producto se creo exitosamente'));
 }
 

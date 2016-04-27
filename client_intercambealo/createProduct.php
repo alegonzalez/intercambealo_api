@@ -29,8 +29,7 @@ $options = array(
 
 $context  = stream_context_create($options);
 $response = file_get_contents($url,false,$context);
-var_dump($response);
-die;
+
 
 if($response === FALSE){
 	header('Content-Type: application/json');
