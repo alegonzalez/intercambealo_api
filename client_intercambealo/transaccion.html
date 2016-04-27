@@ -10,15 +10,49 @@
 	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 </head>
 <script type="text/javascript">
+
+	function closeSession(){
+
+		var user = localStorage.getItem('User');
+		var types = JSON.parse(user);
+		var id =types['id'];
+
+		var data = new FormData();
+
+		data.append("token",localStorage.getItem('Token'));
+		data.append("username",id);
+
+
+		$.ajax({
+			data:  data,
+			url:   'closeSession.php',
+			type:  'post',
+			contentType:false,
+			processData:false,
+			cache:false,
+			beforeSend: function () {
+				$("#resultado").html("Procesando, espere por favor...");
+			},
+			success:  function (response) {
+				localStorage.clear();
+				window.location.href="http://localhost/intercambealo_api/client_intercambealo/login.html";
+				$("#resultado").html(response);
+			}
+		});
+
+	}	
 	
 	$( document ).ready(function() {
 
-		debugger;
+		var user = localStorage.getItem('User');
+		var types = JSON.parse(user);
+		var id =types['id'];
 
 		$(".transaction").remove();
 		$.ajax({
 			url:   'getTransaccion.php',
 			type:  'get',
+			data: {'id': id},
 			beforeSend: function () {
 				$("#resultado").html("Procesando, espere por favor...");
 			},
@@ -34,9 +68,21 @@
 
 					var transaction = response.message;
 
+
+					var nameOffer="";
+
 					for (var i = 0; i<= transaction.length-1; i++) {
-						createElement(transaction[i].product_req_id,product[i].product_offered_id,transaction[i].id);
+
+						nameOffer = transaction[i].name;
+
+						i++;
+
+						createElement(nameOffer,transaction[i].name,transaction[i].state);
 					}
+
+					//for (var i = 0; i<= transaction.length-1; i++) {
+					//	createElement(transaction[i].product_req_id,transaction[i].product_offered_id,transaction[i].id);
+					//}
 
 					
 				}
@@ -45,20 +91,28 @@
 		});
 	});
 
-	function createElement(req_id,offerend_id){
+	function createElement(nameOffer,nameReq,state){
+
 
 		//var image = imagen.replace("/",".");
 		var txt1 = "<div class ='col-md-3 product'>" + 
-		"<h3 class='tituleProduct'>"+ req_id +"</h3>"+
+		"<h3 class='tituleProduct'>"+ nameReq + '<i class="material-icons">favorite</i>' + nameOffer + "</h3>"+
 		"<div class = 'col-md-7 col-md-offset-2 imageProduct'>" +
-		"<img id='imagen'class='img-thumbnail'>" + "</div>"+
+		"<img id='imagen'class='img-thumbnail'>" + "</div>" ;
 
+		if(state=="Finalizado")
+		{
+			txt1 += "<div class='col-md-6'> "+ "<button type='button' class='btn btn-danger btn_delete_transaction '>  <i class='material-icons'>delete_forever</i>" +"</button>"+ "</div>"+
+			+"</div>";
+			
+		}else (state=="")
+		{
+			txt1 += "<div class='col-md-6'>  <span>PENDIENTE</span> </div>"+
+			+"</div>";
 
-		"<div class='col-md-6'> "+ "<button type='button' id='id' onclick='' class='btn btn-danger actionProduct'> "+ "<i class='material-icons'>delete_forever</i>" +"</button>"+ "</div>"+
+		}
 
-
-		"<div class='col-md-5'> "+ "<button type='button' class='btn btn-primary '> "+ "<i class='material-icons'>update</i>" +"</button>"+ "</div>"+
-		+"</div>";
+		
 
 
 
@@ -82,6 +136,11 @@
 			<li role="presentation" ><a href="product.html">Products</a></li>
 			<li role="presentation" class="active" ><a href="transaccion.html">Transaction</a></li>
 			<li role="presenstation"><a href="register.php">Register User</a></li>
+
+			<li class="dropdown"> <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="material-icons">settings</i> <span class="caret"></span> </a> 
+				<ul class="dropdown-menu" aria-labelledby="drop1"> <li><a href="#" onclick="closeSession();">Close session</a></li> 
+				</ul>
+			</li>
 		</ul>
 	</nav>
 	

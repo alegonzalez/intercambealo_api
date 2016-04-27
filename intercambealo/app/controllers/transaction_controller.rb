@@ -4,14 +4,13 @@ class TransactionController < ApplicationController
 	skip_before_filter :verify_authenticity_token, only: [:create,:index]
 
 	def index
-		transaction = Transaction.all
-		respond_to do |format|
-			if transaction
-				format.json {render json: transaction,status: 200}
-			else
-				format.json {render json: transaction.errors.messages,status: 422}
-			end
-		end
+		transaction = Transaction.where(user_id: params[:user_id])
+
+		if transaction
+			render json: transaction,status: 200
+		else
+			render json: transaction.errors.messages,status: 422
+		end	
 	end
 
 
@@ -20,16 +19,80 @@ class TransactionController < ApplicationController
 	end
 
 	def create
+
 		transaction = Transaction.new(transaction_params)
-		respond_to do |format|
-			if transaction.valid?
-				transaction.save
-				format.json {render json: transaction.valid?,status: 201}
-			else
-				format.json {render json: transaction.errors.messages,status: 422}
-			end
+		if transaction.valid?
+			transaction.save
+			render json: transaction.valid?,status: 201
+		else
+			render json: transaction.errors.messages,status: 422
 		end
+		
 	end 
+
+	def transactionPending
+
+		id = (params[:user_id]);
+
+		transaction =Transaction.joins("LEFT JOIN products ON transactions.product_offered_id=products.id").select("transactions.id,transactions.user_id").where("products.user_id" => id)
+
+		if transaction
+			render json: transaction,status: 201
+		else
+			render json: transaction.errors.messages,status: 422
+		end
+
+	end
+
+	def dateProduct
+
+		id = (params[:user_id]);
+
+
+		transaction =Transaction.joins("LEFT JOIN products ON transactions.product_offered_id=products.id and transactions.user_id =" + id + " or products.id = transactions.product_req_id and  transactions.user_id = "+id ).select("products.*")
+
+
+
+		if transaction
+			render json: transaction,status: 201
+		else
+			render json: transaction.errors.messages,status: 422
+		end
+
+	end
+
+
+	def getNameProductReq
+
+		user_id = params[:user_id];
+
+		transaction = Transaction.joins("LEFT JOIN products ON transactions.product_offered_id=products.id").select("products.*, transactions.*").where( 'products.user_id' => user_id)
+
+		if transaction
+			render json: transaction,status: 201
+		else
+			render json: transaction.errors.messages,status: 422
+		end
+
+	end
+
+
+	def getNameProductOffer
+
+		product_id = params[:product_id];
+
+		transaction = Transaction.joins("LEFT JOIN products ON transactions.product_req_id=products.id").select("products.*").where('transactions.product_req_id' => product_id)
+
+		if transaction
+			render json: transaction,status: 201
+		else
+			render json: transaction.errors.messages,status: 422
+		end
+
+	end
+
+
+
 
 	def validate_token
 

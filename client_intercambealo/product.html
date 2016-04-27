@@ -14,12 +14,131 @@
 
 <script type="text/javascript">
 
-	(function(){ 
+
+	$( document ).ready(function() {
+
+		var user = localStorage.getItem('User');
+		var types = JSON.parse(user);
+		var id =types['id'];
+
+		$.ajax({
+			url:   'getTransactionPending.php',
+			type:  'get',
+			data: {'id': id},
+			beforeSend: function () {
+				$("#resultado").html("Procesando, espere por favor...");
+			},
+			success:  function (response) {
+				
+				if(response.message == "error"){
+					alert("Error");
+				}else{
+
+					var product = response.message;
+
+					if(product !="")
+					{
+
+						var productUser = response.message;
+
+						var productReq = response.message2;
+
+						var nameOffer="";
+						var nameReq="";
+					
+						for (var i = 0; i<= productUser.length-1; i++) {
+
+							nameOffer = productUser[i].name;
+
+							nameReq=productReq[i][0].name;
+
+							transactionPending(nameOffer,nameReq);
+						}
+
+						$('#myModal2').modal('show');
+
+
+
+					}else
+					{
+						var user = localStorage.getItem('User');
+						var types = JSON.parse(user);
+						var id =types['id'];
+
+						$(".productUser").remove();
+						$.ajax({
+
+							url:   'getProductUser.php',
+							type:  'get',
+							data: {'id': id},
+
+							beforeSend: function () {
+								$("#resultado").html("Procesando, espere por favor...");
+							},
+							success:  function (response) {
+
+								if(response.message == "error"){
+									alert("Error");
+								}else{
+									var productUser = response.message;
+
+									for (var i = 0; i<= productUser.length-1; i++) {
+										createElement(productUser[i].name,productUser[i].imagen,productUser[i].id);
+									}
+
+
+								}
+								$("#resultado").html(response);
+							}
+						});
+
+					}
+
+					
+				}
+				$("#resultado").html(response);
+			}
+		});
+
+	});
+
+
+	function transactionPending(product_req_id,product_offered_id)
+	{
+		var txt1 = "<div class ='col-md-3 product'>" + 
+		"<h3 class='tituleProduct'>" + product_req_id + '  <i class="material-icons">favorite</i>  ' + product_offered_id + "</h3>"+
+		"<div class = 'col-md-7 col-md-offset-2 imageProduct'>" + "</div>" +
+
+		"<div class='col-md-6'> "+ "<button type='button' id='transaction' class='btn btn-success'> "+ "ACEPTAR" + "<i class='material-icons'>done</i>" +"</button>"+ "</div>"+
+		+"</div>" +
+
+
+		"<div class='col-md-6'> "+ "<button type='button' id='transaction' class='btn btn-danger '> "+ "CANCELAR" + "<i class='material-icons'>clear</i>" +"</button>"+ "</div>"+
+		+"</div>";
+
+
+
+		var res = txt1.replace("NaN", "");
+		$(".row2").append(res); 
+
+	}
+
+
+
+	function intercambealo(id_req) {
+
+
+		$('.modal-title').attr('id', id_req);
+
+		var user = localStorage.getItem('User');
+		var types = JSON.parse(user);
+		var id =types['id'];
 
 		$(".product").remove();
 		$.ajax({
 			url:   'getProduct.php',
 			type:  'get',
+			data: {'id': id},
 			beforeSend: function () {
 				$("#resultado").html("Procesando, espere por favor...");
 			},
@@ -31,7 +150,7 @@
 					var product = response.message;
 
 					for (var i = 0; i<= product.length-1; i++) {
-						createElement(product[i].name,product[i].imagen,product[i].id);
+						createElementTransaction(product[i].name,product[i].imagen,product[i].id);
 					}
 
 					
@@ -39,44 +158,10 @@
 				$("#resultado").html(response);
 			}
 		});
-	})();
+	}
 
 
-	(function(){ 
-
-		var user = localStorage.getItem('User');
-		var types = JSON.parse(user);
-		var id =types['id'];
-
-		debugger;
-
-		$(".productUser").remove();
-		$.ajax({
-
-			url:   'getProductUser.php',
-			type:  'get',
-			data: {'id': id},
-
-			beforeSend: function () {
-				$("#resultado").html("Procesando, espere por favor...");
-			},
-			success:  function (response) {
-				
-				if(response.message == "error"){
-					alert("Error");
-				}else{
-					var productUser = response.message;
-					debugger;
-					for (var i = 0; i<= productUser.length-1; i++) {
-						createElement(productUser[i].name,productUser[i].imagen,productUser[i].id);
-					}
-
-					
-				}
-				$("#resultado").html(response);
-			}
-		});
-	})();
+	
 
 
 
@@ -137,8 +222,6 @@
 	//create the element html for product
 	function createElement(name,imagen,id){
 
-		debugger;
-
 		//var image = imagen.replace("/",".");
 		var txt1 = "<div class ='col-md-3 product'>" + 
 		"<h3 class='tituleProduct'>"+ name +"</h3>"+
@@ -153,7 +236,7 @@
 		+"</div>" +
 
 
-		"<div class='col-md-6'> "+ "<button type='button' id='transaction' class='btn btn-success btn_transaction ' data-toggle='modal' data-target='#myModal'> "+ "INTERCAMBEALO" + "<i class='material-icons'>thumbs_up_down</i>" +"</button>"+ "</div>"+
+		"<div class='col-md-6'> "+ "<button type='button' id='transaction' class='btn btn-success btn_transaction ' data-toggle='modal' data-target='#myModal' onclick='intercambealo("+id+");'> "+ "INTERCAMBEALO" + "<i class='material-icons'>thumbs_up_down</i>" +"</button>"+ "</div>"+
 		+"</div>";
 
 
@@ -164,67 +247,168 @@
 	}
 
 
+	function transaction(id_offe) {
+		
+		var id_req = $('.modal-title').attr('id');
 
-	$(document).ready(function(){
-		$("#transaction").click(function(){
-			$("#myModal").modal();
+		var user = localStorage.getItem('User');
+		var types = JSON.parse(user);
+		var user_id =types['id'];
+
+		$(".productUser").remove();
+		$.ajax({
+
+			url:   'createTransaction.php',
+			type:  'POST',
+			data: {'product_req_id': id_req,
+			'product_offered_id': id_offe , 'user_id': user_id},
+
+			beforeSend: function () {
+				$("#resultado").html("Procesando, espere por favor...");
+			},
+			success:  function (response) {
+				
+				if(response.message == "error"){
+					alert("Error");
+				}else{	
+
+					debugger;
+					
+					$.ajax({
+						data: {'id': id_req},
+						url:   'updateStateProduct.php',
+						type:  'get',
+						beforeSend: function () {
+							$("#resultado").html("Procesando, espere por favor...");
+						},
+						success:  function (response) {
+							window.location.href="http://localhost/intercambealo_api/client_intercambealo/product.html";
+							$("#resultado").html(response);
+						}
+					});	
+				}
+				
+			}
 		});
-	});
-	
-</script>
-
-<body class="allDashboard" >
-	<div class="cover">
-	</div>
-	<nav>
-		<li class="dashboard"><a href=""><i class="material-icons ">cloud_done</i>Dashboard</a></li>
-		<ul class="nav nav-pills">
-			<li role="presentation" ><a href="login.php">Login</a></li>
-			<li role="presentation" class="active"><a href="#">Products</a></li>
-			<li role="presentation"  ><a href="transaccion.html">Transaction</a></li>
-			<li role="presentation"><a href="register.php">Register User</a></li>
-
-			<li class="dropdown"> <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="material-icons">settings</i> <span class="caret"></span> </a> 
-				<ul class="dropdown-menu" aria-labelledby="drop1"> <li><a href="#" onclick="closeSession();">Close session</a></li> 
-				</ul>
-			</li>
-		</ul>
-	</nav>
 
 
-	<div class="modal fade" id="myModal" role="dialog">
-		<div class="modal-dialog">
-			<!-- Modal content-->
-			<div class="modal_transaction modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">INTERCAMBELO</h4>
-				</div>
-				<div class="modal-body" >
-					<div class="container">
-						<div class="row">
-							
+
+
+
+
+	}
+
+
+		//create the element html for product
+		function createElementTransaction(name,imagen,id){
+
+
+
+
+			var txt1 = "<div class ='col-md-3 product'>" + 
+			"<h3 class='tituleProduct'>"+ name +"</h3>"+
+			"<div class = 'col-md-7 col-md-offset-2 imageProduct'>" +
+			"<img id='imagen' onClick='transaction(" + id + ");' src='http://2.bp.blogspot.com/-VmfFFZ4AnIM/UOwwdLzibYI/AAAAAAAABvU/2Cl-jYrs4lI/s1600/flores+silvestres+(15).jpg' class='img-thumbnail'>" + "</div>";
+
+			var res = txt1.replace("NaN", "");
+			$(".row1").append(res); 
+
+
+		}
+
+
+
+		$(document).ready(function(){
+			$("#transaction").click(function(){
+				$("#myModal").modal();
+			});
+		});
+
+	</script>
+
+	<body class="allDashboard" >
+		<div class="cover">
+		</div>
+		<nav>
+			<li class="dashboard"><a href=""><i class="material-icons ">cloud_done</i>Dashboard</a></li>
+			<ul class="nav nav-pills">
+				<li role="presentation" ><a href="login.php">Login</a></li>
+				<li role="presentation" class="active"><a href="product.html"  >Products</a></li>
+
+				<li role="presentation"  ><a href="transaccion.html">Transaction</a></li>
+				<li role="presentation"><a href="register.php">Register User</a></li>
+
+				<li class="dropdown"> <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="material-icons">settings</i> <span class="caret"></span> </a> 
+					<ul class="dropdown-menu" aria-labelledby="drop1"> <li><a href="#" onclick="closeSession();">Close session</a></li> 
+					</ul>
+				</li>
+			</ul>
+		</nav>
+
+
+		<div class="modal fade" id="myModal" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal_transaction modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title" id="">INTERCAMBELO</h4>
+					</div>
+					<div class="modal-body" >
+						<div class="container">
+							<div class="row1">
+
+							</div>
 						</div>
 					</div>
+					<div class="modal-footer">
+						<a href="product.html">
+							<button type="button"   class="btn btn-default" data-dismiss="modal">Products</button>
+						</a>
+					</div>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				</div>
+
 			</div>
-
 		</div>
-	</div>
 
 
+		<div class="modal fade" id="myModal2" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal_transaction modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title" id="">INTERCAMBELO</h4>
+					</div>
+					<div class="modal-body" >
+						<div class="container">
+							<div class="row2">
 
-	
-	<div class="container">
-		<div class="row">
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="product.html">
+							<button type="button"   class="btn btn-default" data-dismiss="modal">Products</button>
+						</a>
+					</div>
+				</div>
 
+			</div>
 		</div>
-	</div>
 
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-</body>
-</html>
+
+
+
+
+		<div class="container">
+			<div class="row">
+
+			</div>
+		</div>
+
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+	</body>
+	</html>

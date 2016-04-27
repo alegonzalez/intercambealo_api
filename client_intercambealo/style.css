@@ -185,3 +185,21 @@ h3 i{
 	top: 54px;
 }
 
+
+
+#imagen {
+
+cursor: hand;
+}
+
+#imagen img:hover {
+-webkit-transform: rotate(-7deg);
+-moz-transform: rotate(-7deg);
+-ms-transform: rotate(-7deg);
+transform: rotate(-7deg);
+}
+
+.btn_delete_transaction
+{
+	width: 10%!important;
+}

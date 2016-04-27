@@ -1,15 +1,18 @@
 <?php 
 
-$user_id = $_GET['id'];
+$arrayName = array(
+	'state' => 'desactive', 
+);
 
-$url = "http://localhost:3000/product/productUser?user_id=".$user_id;
+$id = $_GET['id'];
 
-
+$url = 'http://localhost:3000/product/'.$id.'.json';
 
 $options = array(
 	'http' => array(
 		'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-		'method'  => 'GET',
+		'method'  => 'PUT', 
+		'content' => http_build_query($arrayName), 
 		'ignore_errors' =>true
 
 		)
@@ -17,7 +20,11 @@ $options = array(
 
 $context  = stream_context_create($options);
 $response = file_get_contents($url,false,$context);
-$response = json_decode($response);
+
+
+var_dump($response);
+die;
+
 
 if($response === FALSE){
 	header('Content-Type: application/json');

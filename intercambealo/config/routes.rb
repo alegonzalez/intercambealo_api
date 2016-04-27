@@ -3,8 +3,17 @@ Rails.application.routes.draw do
   #resources :product 
 #Agrega routas a los recursos el collection
 
+  resources :transaction do
+    collection do
+        get :transactionPending
+        get :dateProduct
+        get :getNameProductReq
+        get :getNameProductOffer
+    end
+  end
 
- resources :transaction 
+
+  
 
  resources :product do
     collection do

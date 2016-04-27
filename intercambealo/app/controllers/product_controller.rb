@@ -7,35 +7,32 @@ class ProductController < ApplicationController
 	skip_before_filter :verify_authenticity_token, only: [:create,:update,:destroy,:show,:index,:search,:validate_token]
 
 	def index
-		product = Product.all
-		respond_to do |format|
-			if product
-				format.json {render json: product,status: 200}
-			else
-				format.json {render json: product.errors.messages,status: 422}
-			end
+
+		product = Product.where.not(user_id: params[:user_id])
+
+		if product
+			render json: product,status: 200
+		else
+			render json: product.errors.messages,status: 422
 		end
 	end
 
 	def productUser
-		product = Product.where(user_id: params[:user_id])
 
-		respond_to do |format|
-			if product
-				format.json {render json: product,status: 200}
-			else
-				format.json {render json: product.errors.messages,status: 422}
-			end
+		product= Product.where(["user_id = :user_id and state = :state", { user_id: params[:user_id], state: "active" }])
+
+		if product
+			render json: product,status: 200
+		else
+			render json: product.errors.messages,status: 422
 		end
+		
 	end
-
 
 
 	def product_params
 		params.permit(:user_id,:name,:description,:state,:imagen)
 	end
-
-	
 
 	def create
 		product = Product.new(product_params)
