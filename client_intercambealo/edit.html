@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Update Product</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+</head>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$(".close").click(function(){
+			$(".messageUpdateProduct").hide();         
+		});
+		$(".messageUpdateProduct").hide();
+		$("#stateProduct").hide();
+		$("#productForDeactivate").hide();
+		var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+		$.ajax({
+			data:  {"id": hashes[0]},
+			url:   'showProduct.php',
+			type:  'POST',
+			beforeSend: function () {
+				$("#resultado").html("Procesando, espere por favor...");
+			},
+			success:  function (response) {
+				debugger;
+				if(response.message == "error"){
+					$(".messageUpdateProduct").show();
+					$("#messageWarning").text("Product data could not be loaded");
+				}else{
+					$("#name").val(response.message[0].name);
+					$("#description").val(response.message[0].description);
+					if(response.message[0].state == "active"){
+						$("#stateProduct").show();
+						$("#stateProduct h3 span").text("The Product is active");
+						$("#productForDeactivate").show();
+					}else{
+						$("#stateProduct").show();
+						$("#stateProduct h3 span").text("The Product is deactivate");
+						$("#productForDeactivate").hide();
+					}
+					console.log(response.message[0]);
+				}
+				$("#resultado").html(response);
+			}
+		});
+	});
+
+		//This is a function update product
+		function updateProduct(){
+			if( $('.deactivate').is(':checked') ) {
+				var state = "desactive";
+			}else{
+				var state = "active";
+			}
+			var inputFileImage = document.getElementById("archivoImage");
+			var file = inputFileImage.files[0];
+			var data = new FormData();
+			var user = localStorage.getItem('User');
+			var types = JSON.parse(user);
+			var id =types['id'];
+			data.append("archivo",file);
+			data.append("user_id",id);
+			data.append("name",$("#name").val());
+			data.append("description",$("#description").val());
+			data.append("state",state);
+			var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+			data.append("idProduct",hashes[0]);
+			$.ajax({
+				data:  data,
+				url:   'editProduct.php',
+				type:  'POST',
+				contentType:false,
+				processData:false,
+				cache:false,
+				beforeSend: function () {
+					$("#resultado").html("Procesando, espere por favor...");
+				},
+				success:  function (response) {
+					debugger;
+					if(response.message == "error"){
+						alert("Error");
+					}else{
+						if(state == "desactive" ){
+							$("#productForDeactivate").hide();
+							$("#stateProduct h3 span").text("The Product is deactivate");
+						}
+						$(".messageUpdateProduct").show();
+						$("#messageWarning").text("The product was successfully updated");
+					}
+					$("#resultado").html(response);
+				}
+			});
+		}
+	</script>
+	<body class="allDashboard" >
+		<div class="cover">
+
+		</div>
+		<nav>
+			<li class="dashboard"><a href=""><i class="material-icons ">cloud_done</i>Dashboard</a></li>
+			<ul class="nav nav-pills">
+
+				<li role="presentation" ><a href="login.html">Login</a></li>
+				<li role="presentation"><a href="product.html">Products</a></li>
+				<li role="presentation"><a href="transaccion.html">Transaction</a></li>
+				<li role="presentation" class="active"><a href="register.html">Register User</a></li>
+				<li class="dropdown"> <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="material-icons">settings</i> <span class="caret"></span> </a> 
+					<ul class="dropdown-menu" aria-labelledby="drop1"> <li><a href="#" onclick="closeSession();">Close session</a></li> 
+					</ul>
+				</li>
+			</ul>
+		</nav>
+		<form enctype="multipart/form-data" id="createProduct" class="createProduct col-md-offset-2">
+			<div class="col-md-10">
+				<h3 id="updateProduct">Update Product</h3>
+			</div>
+			<div class="alert alert-danger alert-dismissible messageUpdateProduct" role="alert">
+				<button type="button" class="close"><span aria-hidden="true">&times;</span></button>
+				<strong id="messageWarning"></strong>
+			</div>
+			<div class="input-group inputLogin col-md-10">
+				<span class="input-group-addon" id="basic-addon1"><i class="material-icons">vpn_key</i></span>
+				<input type="text" class="form-control password" id="name"  placeholder="name" aria-describedby="basic-addon1">
+			</div>
+			<div class="input-group inputLogin col-md-10">
+				<span class="input-group-addon" id="basic-addon1"><i class="material-icons">vpn_key</i></span>
+				<input type="text" class="form-control password" id="description"  placeholder="description" aria-describedby="basic-addon1">
+			</div>
+			<input id="archivoImage" name="archivoImage" type="file" />
+			<div class="col-md-10" id="stateProduct">
+				<h3><span class="label label-primary"></span></h3>
+			</div >
+			<div class="checkbox" id="productForDeactivate">
+				<label>
+					<input type="checkbox" class="deactivate"> Deactive Product
+				</label>
+			</div>
+
+			<div class="col-md-10 col-md-offset-3 buttonLogin">
+				<button type="button" class="btn" onclick="updateProduct();">Update Product</button>
+			</div>
+		</form>
+
+
+
+	</body>
+	</html>

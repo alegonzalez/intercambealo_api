@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
 
     #set encryption the date
     def encryptionDateForToken(user,userSearch)
-    	user.token = Time.now + 30.minute 
+    	user.token = Time.now + 1.minute 
       user.token = Base64.encode64(user.token)
       userSearch.update(:token => user.token)
     end

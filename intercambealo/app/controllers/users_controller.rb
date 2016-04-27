@@ -72,16 +72,18 @@ end
     token = params[:token]
     token = Base64.decode64(token)
     expire = Time.parse(token)
-    render json: {"Message" => expire} ,status: 402 
-    #if (expire.to_i < (Time.now).to_i)
-    #  render json: {"Message" => "the session has expired, please log"} ,status: 402
+   #render json: {"Message1" => Time.now+ 1.minut,"Message2" => expire + 1.minute} ,status: 402      
+   if (expire.utc < Time.now)
+    render json: {"Message" => "the session has expired, please log"} ,status: 402
     #if(token == nil)
      # render json: {"Message" => "Please Log"} ,status: 402
       #
        # 
-    # else
-      token = Time.now + 30.minute
-      
+     else
+       token = Time.now + 1.minute
+       
+
+#    render json: {"Message" => token.localtime} ,status: 402   
      # render json: {"Message" => token} ,status: 402 
       #lal = Time.parse(token)
      # user =  User.new
@@ -94,7 +96,7 @@ end
       #id.token = (id.token)
       #response.headers[''] = id.token
 
-    #end 
+    end 
 
   end
 

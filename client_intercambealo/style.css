@@ -189,17 +189,41 @@ h3 i{
 
 #imagen {
 
-cursor: hand;
+	cursor: hand;
+	cursor: pointer;
 }
 
 #imagen img:hover {
--webkit-transform: rotate(-7deg);
--moz-transform: rotate(-7deg);
--ms-transform: rotate(-7deg);
-transform: rotate(-7deg);
+	-webkit-transform: rotate(-7deg);
+	-moz-transform: rotate(-7deg);
+	-ms-transform: rotate(-7deg);
+	transform: rotate(-7deg);
 }
 
 .btn_delete_transaction
 {
 	width: 10%!important;
 }
+#updateProduct{
+	color: white!important;
+}
+#productForDeactivate{
+	position: relative;
+	left: -536px;
+	top: 70px;
+}
+.modal_transaction {
+	height: 58px!important;
+	width: 182%;
+	right: 41%;
+	top: 54px;
+}
+.headerModal{
+	height: 58px!important;
+}
+/*
+#archivoImage{
+	margin-top: 8%;
+	margin-left: 9%;	
+}
+*/
