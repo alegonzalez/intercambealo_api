@@ -73,7 +73,7 @@ end
     token = Base64.decode64(token)
     expire = Time.parse(token)
    #render json: {"Message1" => Time.now+ 1.minut,"Message2" => expire + 1.minute} ,status: 402      
-   if (expire.utc < Time.now)
+   if (expire < Time.now)
     render json: {"Message" => "the session has expired, please log"} ,status: 402
     #if(token == nil)
      # render json: {"Message" => "Please Log"} ,status: 402
