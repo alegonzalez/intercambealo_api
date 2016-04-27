@@ -7,7 +7,8 @@ $response = @file_get_contents('http://localhost:3000/transaction?user_id='.$use
 $response = json_decode($response);
 
 
-
+if($response!=null)
+{
 $url = "http://localhost:3000/transaction/dateProduct/?user_id=".$response[0]->user_id."&id=".$response[0]->id;
 
 	$options = array(
@@ -28,11 +29,15 @@ $url = "http://localhost:3000/transaction/dateProduct/?user_id=".$response[0]->u
 		if($response[$i]->id==null)
 		{
 			unset($response[$i]);
-			$response = array_values($response);
 		}
+
 
 	}
 
+
+}
+
+$response = array_values($response);
 
 if($response === FALSE){
 	header('Content-Type: application/json');
